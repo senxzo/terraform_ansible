@@ -1,0 +1,6 @@
+---
+# handlers file for roles/webserver-n01657870
+- name: restart_apache
+  ansible.builtin.service:
+    name: httpd
+    state: restarted

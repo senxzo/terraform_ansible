@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: true
+  roles:
+  - profile-n01657870
+  - user-n01657870
+  - webserver-n01657870
+  - datadisk-n01657870

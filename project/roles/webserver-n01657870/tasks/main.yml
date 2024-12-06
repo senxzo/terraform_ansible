@@ -1,0 +1,21 @@
+---
+# tasks file for roles/webserver-n01657870
+
+- name: Install Apache
+  ansible.builtin.yum:
+    name: httpd
+    state: present
+
+- name: Copy website files
+  ansible.builtin.copy:
+    src: "{{ item.file }}"
+    dest: "{{ item.dest }}"
+    mode: '0444'
+  loop: "{{ web_files }}"
+  notify: restart_apache # Notify the handler
+
+- name: Ensure Apache is started
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: yes

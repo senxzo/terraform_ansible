@@ -1,0 +1,71 @@
+---
+# tasks file for roles/user-n01657870
+
+- name: Create cloudadmins group
+  ansible.builtin.group:
+    name: cloudadmins
+
+- name: Create users and add them to groups
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: cloudadmins,wheel
+    append: true
+  loop:
+  - user100
+  - user200
+  - user300
+
+- name: Ensure the .ssh directory exists for each user
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.ssh"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0700'
+  loop:
+  - user100
+  - user200
+  - user300
+  become: true
+
+- name: Generate SSH keys for users without a passphrase
+  ansible.builtin.openssh_keypair:
+    path: "/home/{{ item }}/.ssh/id_rsa"
+    type: rsa
+    state: present
+  loop:
+  - user100
+  - user200
+  - user300
+  become: true
+  become_user: "{{ item }}"
+
+- name: Set correct permissions on SSH private keys
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.ssh/id_rsa"
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: '0600'
+  loop:
+  - user100
+  - user200
+  - user300
+  become: true
+
+- name: Ensure local directory for keys exists
+  ansible.builtin.file:
+    path: ./keys
+    state: directory
+    mode: '0700'
+
+- name: Ensure private key placeholder exists in local directory
+  ansible.builtin.file:
+    path: ./keys/user100_private_key
+    state: touch
+    mode: '0600'
+
+- name: Download private key for user100 to local machine
+  ansible.builtin.fetch:
+    src: /home/user100/.ssh/id_rsa
+    dest: ./keys/user100_private_key
+    flat: true

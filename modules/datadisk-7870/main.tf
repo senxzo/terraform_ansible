@@ -1,5 +1,5 @@
 resource "azurerm_managed_disk" "data_disk" {
-  count                = 4
+  count                = 3
   name                 = "datadisk-${var.humber_id}-${count.index}"
   location             = var.location
   resource_group_name  = var.resource_group_name

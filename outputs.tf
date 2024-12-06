@@ -26,21 +26,11 @@ output "linux_vm_hostnames" {
   value = module.vmlinux_7870.vm_hostnames
 }
 
-output "wm_hostname" {
-  value = module.vmwindows_7870.hostname
-}
 
 output "vm_fqdns" {
   value = module.vmlinux_7870.vm_fqdns
 }
 
-output "wm_fqdn" {
-  value = module.vmwindows_7870.wm_fqdn
-}
-
-output "wm_private_ip" {
-  value = module.vmwindows_7870.wm_private_ip
-}
 output "vm_private_ip" {
   value = module.vmlinux_7870.vm_private_ip
 }
@@ -48,9 +38,6 @@ output "vm_public_ip" {
   value = module.vmlinux_7870.vm_public_ip
 }
 
-output "wm_public_ip" {
-  value = module.vmwindows_7870.wm_public_ip
-}
 
 output "subnet_name" {
   value = module.network_7870.subnet_name

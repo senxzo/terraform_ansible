@@ -1,0 +1,13 @@
+---
+# tasks file for roles/profile-N01657870
+- name: Append test block and username to /etc/profile
+  ansible.builtin.lineinfile:
+    path: /etc/profile
+    line: "#Test block added by n01657870"
+    insertafter: EOF
+
+- name: Append TMOUT setting to /etc/profile
+  ansible.builtin.lineinfile:
+    path: /etc/profile
+    line: "export TMOUT=1500"
+    insertafter: EOF

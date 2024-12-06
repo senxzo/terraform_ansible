@@ -69,9 +69,9 @@ variable "storage_account_blob_endpoint" {
 
 locals {
   tags = {
-    Assignment     = "CCGC 5502 Automation Assignment"
+    Assignment     = "CCGC 5502 Automation Project"
     Name           = "innocent.audu"
     ExpirationDate = "2024-12-31"
-    Environment    = "Learning"
+    Environment    = "Project"
   }
 }

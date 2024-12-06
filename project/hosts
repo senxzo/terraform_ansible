@@ -1,0 +1,21 @@
+[linux]
+n01657870-c-vm1 ansible_host=4.205.217.8 ansible_user=n01657870 ansible_python_interpreter=/usr/bin/python3 #bind=bind evolution=evolution
+n01657870-c-vm2 ansible_host=4.205.219.161 ansible_user=n01657870 ansible_python_interpreter=/usr/bin/python3
+
+[windows]
+n01657870-w-vm1 ansible_host=4.206.95.115 
+
+[os:children]
+linux
+windows
+
+; [linux:vars]
+; ypserv=ypserv
+
+[windows:vars]
+ansible_user=n01657870
+ansible_password=my_passWD@
+ansible_connection=winrm
+ansible_port=5985
+ansible_winrm_transport=ntlm
+ansible_winrm_server_cert_validation=ignore

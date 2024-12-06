@@ -1,0 +1,6 @@
+# roles/datadisk-HumberID/vars/main.yml
+---
+disk_device: "/dev/sdb" # Replace with the actual disk device
+partition_sizes:
+- { start: "0GB", end: "4GB", fstype: "xfs", mountpoint: "/part1" }
+- { start: "4GB", end: "9GB", fstype: "ext4", mountpoint: "/part2" }

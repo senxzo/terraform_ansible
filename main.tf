@@ -102,14 +102,16 @@ module "vmlinux_7870" {
   storage_account_blob_endpoint = local.storage_account_blob_endpoint
 }
 
-module "vmwindows_7870" {
-  source                        = "./modules/vmwindows-7870"
-  humber_id                     = var.humber_id
-  location                      = var.location
-  resource_group_name           = module.resource_group.resource_group_name
-  admin_username                = var.admin_username
-  admin_password                = var.admin_password
-  vm_count                      = 1
-  subnet_id                     = module.network_7870.subnet_id
-  storage_account_blob_endpoint = module.common_services_7870.storage_account_blob_endpoint
+resource "local_file" "vm_html_files" {
+  for_each = module.vmlinux_7870.vm_fqdns
+
+  content  = <<EOT
+<html>
+  <body>
+    <p>FQDN: ${each.value}</p>
+  </body>
+</html>
+EOT
+
+  filename = "${path.root}/project/roles/webserver-n01657870/files/${each.key}.html"
 }
