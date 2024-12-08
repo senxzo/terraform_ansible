@@ -57,15 +57,55 @@
     path: ./keys
     state: directory
     mode: '0700'
+  delegate_to: localhost
+  become: false
 
 - name: Ensure private key placeholder exists in local directory
   ansible.builtin.file:
     path: ./keys/user100_private_key
     state: touch
     mode: '0600'
+  delegate_to: localhost
+  become: false
 
-- name: Download private key for user100 to local machine
+- name: Ensure user-specific directories exist in local keys directory
+  ansible.builtin.file:
+    path: "./keys/{{ item }}"
+    state: directory
+    mode: '0700'
+  loop:
+  - user100
+  - user200
+  - user300
+  delegate_to: localhost
+  become: false
+
+- name: Slurp user public keys
+  slurp:
+    path: "/home/{{ item }}/.ssh/id_rsa.pub"
+  loop:
+  - user100
+  - user200
+  - user300
+  register: user_public_keys
+  become: true
+
+- name: Add user public keys to authorized keys
+  ansible.builtin.authorized_key:
+    user: "{{ item.item }}"
+    key: "{{ item.content | b64decode }}"
+    state: present
+  loop: "{{ user_public_keys.results }}"
+  become: true
+
+- name: Download private keys for users to local machine
   ansible.builtin.fetch:
-    src: /home/user100/.ssh/id_rsa
-    dest: ./keys/user100_private_key
+    src: "/home/{{ item }}/.ssh/id_rsa"
+    dest: "./keys/{{ item }}/{{ item }}_private_key_{{ inventory_hostname }}"
     flat: true
+  loop:
+  - user100
+  - user200
+  - user300
+  become: true
+  become_user: "{{ item }}"

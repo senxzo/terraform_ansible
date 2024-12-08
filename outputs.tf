@@ -50,3 +50,6 @@ output "subnet_id" {
 output "virtual_network_name" {
   value = module.network_7870.virtual_network_name
 }
+output "load_balancer_fqdn" {
+  value = module.loadbalancer_7870.load_balancer_fqdn
+}

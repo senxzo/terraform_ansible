@@ -4,8 +4,8 @@
   ansible.builtin.command:
     cmd: "parted {{ disk_device }} mkpart primary {{ item.fstype }} {{ item.start }} {{ item.end }}"
   loop: "{{ partition_sizes }}"
-  loop_control:
-    loop_var: item
+  #loop_control:
+    #loop_var: item
 
 - name: Create filesystems
   ansible.builtin.filesystem:

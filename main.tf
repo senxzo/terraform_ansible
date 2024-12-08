@@ -48,6 +48,8 @@ module "datadisk_7870" {
 
 module "loadbalancer_7870" {
   source              = "./modules/loadbalancer-7870"
+  
+  
   humber_id           = var.humber_id
   location            = var.location
   resource_group_name = module.resource_group.resource_group_name
