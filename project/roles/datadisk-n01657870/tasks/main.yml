@@ -1,11 +1,10 @@
-# roles/datadisk-HumberID/tasks/main.yml
 ---
+# tasks file for roles/datadisk-HumberID
+
 - name: Partition the disk
   ansible.builtin.command:
     cmd: "parted {{ disk_device }} mkpart primary {{ item.fstype }} {{ item.start }} {{ item.end }}"
   loop: "{{ partition_sizes }}"
-  #loop_control:
-    #loop_var: item
 
 - name: Create filesystems
   ansible.builtin.filesystem:
@@ -28,7 +27,7 @@
     state: mounted
   loop: "{{ partition_sizes }}"
 
-- name: Persist mount
+- name: Persist mounts in /etc/fstab
   ansible.builtin.mount:
     path: "{{ item.mountpoint }}"
     src: "{{ disk_device }}{{ loop.index }}"

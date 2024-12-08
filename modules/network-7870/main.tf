@@ -17,6 +17,7 @@ resource "azurerm_network_security_group" "nsg" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
+  # Allow SSH
   security_rule {
     name                       = "Allow-SSH"
     priority                   = 100
@@ -29,6 +30,7 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 
+  # Allow RDP
   security_rule {
     name                       = "Allow-RDP"
     priority                   = 110
@@ -41,6 +43,7 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 
+  # Allow WinRM
   security_rule {
     name                       = "Allow-WinRM"
     priority                   = 120
@@ -53,6 +56,7 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 
+  # Allow HTTP
   security_rule {
     name                       = "Allow-HTTP"
     priority                   = 130
