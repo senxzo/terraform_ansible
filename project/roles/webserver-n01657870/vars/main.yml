@@ -1,7 +1,7 @@
----
-# vars file for roles/webserver-n01657870
+# ---
+# # vars file for roles/webserver-n01657870
 
-web_files:
-- { file: vm1.html, dest: /var/www/html/index.html, node: VM1 }
-- { file: vm2.html, dest: /var/www/html/index.html, node: VM2 }
-- { file: vm3.html, dest: /var/www/html/index.html, node: VM3 }
+# web_files:
+# - { file: vm1.html, dest: /var/www/html/index.html, node: VM1 }
+# - { file: vm2.html, dest: /var/www/html/index.html, node: VM2 }
+# - { file: vm3.html, dest: /var/www/html/index.html, node: VM3 }

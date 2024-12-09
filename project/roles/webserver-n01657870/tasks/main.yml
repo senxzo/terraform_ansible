@@ -6,16 +6,14 @@
     name: httpd
     state: present
 
-- name: Copy website files
-  ansible.builtin.copy:
-    src: "{{ item.file }}"
-    dest: "{{ item.dest }}"
-    mode: '0444'
-  loop: "{{ web_files }}"
-  notify: restart_apache # Notify the handler
-
-- name: Ensure Apache is started
+- name: Start and enable Apache
   ansible.builtin.service:
     name: httpd
     state: started
-    enabled: yes
+    enabled: true
+
+- name: Copy specific website file to /var/www/html/index.html
+  ansible.builtin.copy:
+    src: "files/{{ hostvars[inventory_hostname].vm_file }}"
+    dest: /var/www/html/index.html
+  when: hostvars[inventory_hostname].vm_file is defined

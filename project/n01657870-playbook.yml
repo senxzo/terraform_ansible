@@ -1,8 +1,21 @@
 ---
 - hosts: all
   become: true
+  vars:
+    web_files:
+      7870-vm1: { file: vm1.html, dest: /var/www/html/index.html }
+      7870-vm2: { file: vm2.html, dest: /var/www/html/index.html }
+      7870-vm3: { file: vm3.html, dest: /var/www/html/index.html }
+
+  tasks:
+  - name: Copy web file
+    ansible.builtin.copy:
+      src: "files/{{ web_files[inventory_hostname].file }}"
+      dest: "{{ web_files[inventory_hostname].dest }}"
+    when: inventory_hostname in web_files
+
   roles:
   - profile-n01657870
   - user-n01657870
   - webserver-n01657870
-  #- datadisk-n01657870
+  - datadisk-n01657870

@@ -1,37 +1,68 @@
----
 # tasks file for roles/datadisk-HumberID
+
+- name: Create a GPT partition table on /dev/sdc
+  ansible.builtin.command:
+    cmd: parted --script /dev/sdc mklabel gpt
+  register: partition_table
+  changed_when: partition_table.rc == 0
+  failed_when: partition_table.rc != 0
+
+- debug:
+    var: partition_table
 
 - name: Partition the disk
   ansible.builtin.command:
-    cmd: "parted {{ disk_device }} mkpart primary {{ item.fstype }} {{ item.start }} {{ item.end }}"
-  loop: "{{ partition_sizes }}"
+    cmd: parted --script /dev/sdc mkpart primary {{ item.fstype }} {{ item.start }} {{ item.end }}
+  loop:
+  - { start: '0GB', end: '4GB', fstype: 'xfs', mountpoint: '/part1' }
+  - { start: '4GB', end: '9GB', fstype: 'ext4', mountpoint: '/part2' }
+  register: partition_output
+  failed_when: partition_output.rc != 0
+
+- debug:
+    var: partition_output
 
 - name: Create filesystems
   ansible.builtin.filesystem:
     fstype: "{{ item.fstype }}"
-    dev: "{{ disk_device }}{{ loop.index }}"
-  loop: "{{ partition_sizes }}"
+    dev: "/dev/sdc{{ item.index }}"
+  loop:
+  - { start: '0GB', end: '4GB', fstype: 'xfs', mountpoint: '/part1', index: 1 }
+  - { start: '4GB', end: '9GB', fstype: 'ext4', mountpoint: '/part2', index: 2 }
+
+- name: Debug filesystem creation
+  ansible.builtin.debug:
+    msg: "Filesystem {{ item.fstype }} created on /dev/sdc{{ item.index }} with mount point {{ item.mountpoint }}"
+  loop:
+  - { start: '0GB', end: '4GB', fstype: 'xfs', mountpoint: '/part1', index: 1 }
+  - { start: '4GB', end: '9GB', fstype: 'ext4', mountpoint: '/part2', index: 2 }
 
 - name: Create mount points
   ansible.builtin.file:
     path: "{{ item.mountpoint }}"
     state: directory
-  loop: "{{ partition_sizes }}"
+  loop:
+  - { start: '0GB', end: '4GB', fstype: 'xfs', mountpoint: '/part1', index: 1 }
+  - { start: '4GB', end: '9GB', fstype: 'ext4', mountpoint: '/part2', index: 2 }
 
 - name: Mount partitions
   ansible.builtin.mount:
     path: "{{ item.mountpoint }}"
-    src: "{{ disk_device }}{{ loop.index }}"
+    src: "/dev/sdc{{ item.index }}"
     fstype: "{{ item.fstype }}"
     opts: defaults
     state: mounted
-  loop: "{{ partition_sizes }}"
+  loop:
+  - { start: '0GB', end: '4GB', fstype: 'xfs', mountpoint: '/part1', index: 1 }
+  - { start: '4GB', end: '9GB', fstype: 'ext4', mountpoint: '/part2', index: 2 }
 
 - name: Persist mounts in /etc/fstab
   ansible.builtin.mount:
     path: "{{ item.mountpoint }}"
-    src: "{{ disk_device }}{{ loop.index }}"
+    src: "/dev/sdc{{ item.index }}"
     fstype: "{{ item.fstype }}"
     opts: defaults
     state: mounted
-  loop: "{{ partition_sizes }}"
+  loop:
+  - { start: '0GB', end: '4GB', fstype: 'xfs', mountpoint: '/part1', index: 1 }
+  - { start: '4GB', end: '9GB', fstype: 'ext4', mountpoint: '/part2', index: 2 }
