@@ -3,7 +3,7 @@ resource "azurerm_public_ip" "lb_public_ip" {
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
-  domain_name_label   = "lb-${var.humber_id}-dns"  # Add a unique DNS label
+  domain_name_label   = "lb-${var.humber_id}-dns" 
 }
 
 resource "azurerm_lb" "load_balancer" {
@@ -43,8 +43,9 @@ resource "azurerm_lb_rule" "lb_rule" {
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "lb_backend_association" {
-  for_each                = var.vm_nics
-  network_interface_id    = each.value
+  for_each = var.vm_nics
+
+  network_interface_id    = each.value  # Pass NIC ID dynamically
   backend_address_pool_id = azurerm_lb_backend_address_pool.lb_backend_pool.id
-  ip_configuration_name   = "ipconfig1"
+  ip_configuration_name   = "ipconfig1"  # Ensure this matches the configuration name in your NICs
 }
